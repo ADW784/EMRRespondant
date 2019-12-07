@@ -1,3 +1,44 @@
 <resources>
     <string name="app_name">EMRRespondant</string>
+    <string name="back_button">BACK</string>
+    <string name="save_button">SAVE</string>
+    <string name="button_title_login">LOGIN</string>
+    <string name="text_title_login">Login</string>
+    <string name="placeholder_enter_email_address">Enter Email Address</string>
+    <string name="placeholder_enter_password">Enter Password</string>
+    <string name="placeholder_logo">logo</string>
+    <string name="text_title_no_account_register">Don\'t have an account? Click here to Register</string>
+    <string name="button_title_continue_as_guest">Continue as Guest</string>
+    <string name="text_title_register">Register</string>
+    <string name="text_title_already_registered_login">Already Registered? Login here.</string>
+    <string name="placeholder_first_name">First Name</string>
+    <string name="text_title_Register">Register</string>
+    <string name="placeholder_last_name">Last Name</string>
+    <string name="placeholder_email_address">Email address</string>
+    <string name="placeholder_password">Password</string>
+    <string name="placeholder_confirm_password">Confirm Password</string>
+
+    <string name="registration_error_message">Please fix errors to continue the registration process!</string>
+    <string name="Button_tittle_sign_out">Sign Out</string>
+    <string name="button_title_register">Register</string>
+    <string name="text_title_sos">Press Button to send S.O.S</string>
+    <string name="text_title_welcome">Welcome</string>
+    <string name="button_tittle_edit_profile">Edit Profile</string>
+    <string name="placeholder_text_enter_emergency_description">enter emergency description</string>
+    <string name="placeholder_sos">sos</string>
+    <string name="text_title_emergency">Emergency</string>
+    <string name="text_title_reported_at">Reported At:</string>
+    <string name="placeholder_date">2019-12-12</string>
+    <string name="text_title_status">Status</string>
+    <string name="placeholder_response">Awaiting Response</string>
+    <string name="text_title_emergency_description">Emergency Description</string>
+    <string name="placeholder_this_is_an_example_emergency">This is an example emergency</string>
+    <string name="placeholder_responder_info">Responder\'s name is Tom. Tom is 200m away.</string>
+    <string name="button_title_cancel_emergency">cancel emergency</string>
+    <string name="text_title_update_profile">Update Profile</string>
+    <string name="placeholder_medication">Enter any medication being taken</string>
+    <string name="placeholder_allergies">Enter any allergies</string>
+    <string name="placeholder_doctor">Doctor\'s name</string>
+    <string name="button_title_update_profile">Update Profile</string>
+    <string name="button_title_cancel_update">Cancel Update</string>
 </resources>
