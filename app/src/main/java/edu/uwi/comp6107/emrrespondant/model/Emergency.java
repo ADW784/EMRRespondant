@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Emergency {
+public class Emergency /*implements Comparable<Emergency>*/{
 
     public String id;
     public Long timestamp;
@@ -35,6 +35,14 @@ public class Emergency {
         this.description = description;
         this.status = status.toString();
         this.location = location;
+    }
+
+    public float getDistance() {
+        if(responder == null || location == null) { return -1;} else {
+            if(responder.currentLocation == null) {return -1;} else {
+                return location.distanceTo(responder.currentLocation);
+            }
+        }
     }
 
     public Map<String, Object> toMap() {
@@ -68,5 +76,20 @@ public class Emergency {
                 + ", location: " + location
                 + ")";
     }
+/*
+    @Override
+    public int compareTo(Emergency o) {
+        int result = 0;
 
+        if(this.getDistance() == -1) {return 1;}
+
+        if(this.getDistance() < o.getDistance()) {
+            result = -1;
+        } else if (this.getDistance() > o.getDistance()) {
+            result = 1;
+        }
+
+        return result;
+    }
+*/
 }

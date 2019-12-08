@@ -41,4 +41,12 @@
     <string name="placeholder_doctor">Doctor\'s name</string>
     <string name="button_title_update_profile">Update Profile</string>
     <string name="button_title_cancel_update">Cancel Update</string>
+    <string name="placeholder_emergency_description">Somebody in trouble</string>
+    <string name="placeholder_title_lat">Lat:</string>
+    <string name="placeholder_latitude">13.455</string>
+    <string name="text_title_long">Long:</string>
+    <string name="placeholder_longitude">-59.344</string>
+    <string name="placeholder_distance">300km away</string>
+    <string name="button_title_respond_to_emergency">Respond to Emergency</string>
+    <string name="button_title_get_directions">Get Directions</string>
 </resources>

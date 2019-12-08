@@ -45,6 +45,8 @@ public class EmergencyPresenter {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+            Log.d(TAG, "userEmergencyListener:onDataChange: snapshot: " + dataSnapshot);
+
             Emergency emergency = dataSnapshot.getValue(Emergency.class);
             Log.d(TAG, "userEmergencyListener:onDataChange: emergency: " + emergency);
             if(emergency != null && emergency.id != null) {
@@ -75,6 +77,10 @@ public class EmergencyPresenter {
 
     public void getEmergencyDetailsForCurrentUser() {
         firebaseManager.getRefForCurrentUser().child(firebaseManager.EMERGENCY_REF).addValueEventListener(userEmergencyListener);
+    }
+
+    public void getEmergencyDetailsForUserWithId(String id) {
+        firebaseManager.USERS_DATABASE_REFERENCE.child(id).child(firebaseManager.EMERGENCY_REF).addValueEventListener(userEmergencyListener);
     }
 
     public void upDateEmergencyStatusForCurrentUser(final EmergencyStatus status){

@@ -30,7 +30,11 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
     TextView timestampTextView;
     TextView statusTextView;
     TextView descriptionTextView;
-    TextView responderInfoTextView;
+    TextView distanceTextView;
+    TextView allergiesTextView;
+    TextView medicationTextView;
+    TextView doctorTextView;
+    Button getDirectionsButton;
     Button cancelEmergencyButton;
 
     View.OnClickListener cancelEmergencyListener = new View.OnClickListener() {
@@ -46,7 +50,9 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
         setContentView(R.layout.activity_emergency);
 
         emergencyPresenter = new EmergencyPresenter(this);
-        emergencyPresenter.getEmergencyDetailsForCurrentUser();
+        Intent intent = getIntent();
+        String callerId = intent.getStringExtra("CALLER_ID");
+        emergencyPresenter.getEmergencyDetailsForUserWithId(callerId);
 
         locationPresenter = new LocationPresenter(this, this);
         locationPresenter.checkLocationSettingsAndStartUpdates(this);
@@ -54,10 +60,17 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
         timestampTextView = findViewById(R.id.timestamp_textView);
         statusTextView = findViewById(R.id.status_textView);
         descriptionTextView = findViewById(R.id.description_textView);
-        responderInfoTextView = findViewById(R.id.responder_info_textView);
+        distanceTextView = findViewById(R.id.distance_textView);
+        allergiesTextView = findViewById(R.id.allergies_textView);
+        medicationTextView = findViewById(R.id.medication_textView);
+        doctorTextView = findViewById(R.id.doctor_textView);
 
-        cancelEmergencyButton = findViewById(R.id.cancel_emergency_button);
+        getDirectionsButton = findViewById(R.id.get_directions_button);
+
+        cancelEmergencyButton = findViewById(R.id.respond_to_emergency_button);
         cancelEmergencyButton.setOnClickListener(cancelEmergencyListener);
+
+
 
         setTitle("Emergency");
     }
@@ -94,7 +107,7 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
             }
         }
 
-        responderInfoTextView.setText(responderInfo);
+
 
     }
 

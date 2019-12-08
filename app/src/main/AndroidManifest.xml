@@ -10,7 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.EmergencyListActivity"></activity>
-        <activity android:name=".ui.EmergencyActivity" />
+        <activity
+            android:name=".ui.EmergencyActivity"
+            android:parentActivityName=".ui.EmergencyListActivity"> </activity>
         <activity android:name=".ui.RegistrationActivity" />
         <activity android:name=".ui.LoginActivity">
             <intent-filter>
