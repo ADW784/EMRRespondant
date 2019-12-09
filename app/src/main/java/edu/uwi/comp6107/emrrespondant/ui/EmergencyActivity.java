@@ -174,7 +174,7 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
 
         String responderInfo = "";
-        if(emergency.responder != null){
+        if(currentResponder != null){
             if(currentResponder.currentLocation != null && emergency.location != null) {
                 Float distance = emergency.location.distanceTo(currentResponder.currentLocation);
                 Float distanceInKm = distance/1000;
