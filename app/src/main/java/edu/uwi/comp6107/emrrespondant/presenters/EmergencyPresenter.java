@@ -210,6 +210,28 @@ public class EmergencyPresenter {
                 Log.d(TAG, "updateResponder:onFailure: " + e.getMessage());
             }
         });
+
+    }
+
+    public  void updateResponder(Emergency emergency, Responder responder){
+
+        firebaseManager.USERS_DATABASE_REFERENCE.
+                child(emergency.callerId)
+                .child(firebaseManager.EMERGENCY_REF)
+                .child("responder").setValue(responder)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "updateResponder:onSuccess: ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "updateResponder:onFailure: " + e.getMessage());
+                    }
+                });
+
     }
 
 

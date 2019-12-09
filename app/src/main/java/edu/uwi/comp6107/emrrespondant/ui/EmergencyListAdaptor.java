@@ -82,12 +82,14 @@ public class EmergencyListAdaptor extends RecyclerView.Adapter<EmergencyListAdap
             }
 
 
-            if(responder != null){
-                if(responder.currentLocation != null && emergency.location != null) {
-                    Float floatDistance = emergency.location.distanceTo(responder.currentLocation);
+            if(currentResponder != null){
+                if(currentResponder.currentLocation != null && emergency.location != null) {
+                    Float floatDistance = emergency.location.distanceTo(currentResponder.currentLocation);
                     Float distanceInKm = floatDistance/1000;
                     String stringDistance = String.format("%1.2f", distanceInKm);
                     distance.setText(stringDistance + "km away.");
+                } else {
+                    distance.setText("");
                 }
             }
 
@@ -135,7 +137,7 @@ public class EmergencyListAdaptor extends RecyclerView.Adapter<EmergencyListAdap
     }
 
     public void updateCurrentResponder(Responder responder) {
-        this.currentResponder = currentResponder;
+        this.currentResponder = responder;
         sortEmergencies();
         notifyDataSetChanged();
     }

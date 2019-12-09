@@ -50,11 +50,11 @@ public class LocationPresenter {
 //            for (Location location : locationResult.getLocations()) {
 //                // Update UI with location data
             locationListener.didUpdateLocation(locationResult);
-            //Log.d(TAG, "locationCallback:onLocationResult: location result:" + locationResult);
+            Log.d(TAG, "locationCallback:onLocationResult: location result:" + locationResult);
 //            }
             if(locationResult.getLastLocation() != null ){
                 locationListener.didGetLastLocation(locationResult.getLastLocation());
-                //Log.d(TAG, "locationCallback:onLocationResult: last location:" + locationResult.getLastLocation());
+                Log.d(TAG, "locationCallback:onLocationResult: last location:" + locationResult.getLastLocation());
             }
         }
     };
@@ -129,7 +129,7 @@ public class LocationPresenter {
                 // All location settings are satisfied. The client can initialize
                 // location requests here.
                 //createLocationRequest();
-                Log.d(TAG, "checkLocationSettingsAndStartUpdates:onSuccess: response" + locationSettingsResponse);
+                Log.d(TAG, "checkLocationSettingsAndStartUpdates:onSuccess: response: " + locationSettingsResponse.toString());
                 startLocationUpdates();
             }
         });

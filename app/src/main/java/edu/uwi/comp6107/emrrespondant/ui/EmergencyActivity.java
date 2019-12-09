@@ -1,24 +1,33 @@
 package edu.uwi.comp6107.emrrespondant.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.LocationResult;
 
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import edu.uwi.comp6107.emrrespondant.R;
+import edu.uwi.comp6107.emrrespondant.helpers.AlertHelper;
+import edu.uwi.comp6107.emrrespondant.managers.Constants;
 import edu.uwi.comp6107.emrrespondant.model.Caller;
 import edu.uwi.comp6107.emrrespondant.model.Emergency;
 import edu.uwi.comp6107.emrrespondant.model.EmergencyStatus;
@@ -34,6 +43,7 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
     LocationPresenter locationPresenter;
     UserInfoPresenter userInfoPresenter;
     Caller currentCaller;
+    Responder currentResponder;
 
     TextView timestampTextView;
     TextView statusTextView;
@@ -51,6 +61,37 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
         @Override
         public void onClick(View v) {
 
+            if(currentEmergency != null && currentResponder != null) {
+                if(currentEmergency.location != null && currentResponder.currentLocation != null) {
+
+                    // Create a Uri from an intent string. Use the result to create an Intent.
+                    Double latitude = currentEmergency.location.getLatitude();
+                    Double longitude = currentEmergency.location.getLongitude();
+                    Double startLatitude = currentResponder.currentLocation.getLatitude();
+                    Double startLongitude = currentResponder.currentLocation.getLongitude();
+                    String name = "Emergency Location";
+                    String query = "saddr=" + startLatitude.toString() + "," + startLongitude.toString() + "&daddr=" + latitude + "," + longitude;
+                    Uri gmmIntentUri = Uri.parse(Constants.GOOGLE_MAPS_DIRECTIONS_BASE_API + query);
+
+                    Log.d(TAG, "getDirectionsListener:onClick: uri: " + gmmIntentUri);
+
+                    // Create an Intent from gmmIntentUri. Set the action to ACTION_VIEW
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+
+                    // Make the Intent explicit by setting the Google Maps package
+                    mapIntent.setPackage("com.google.android.apps.maps");
+
+                    // Attempt to start an activity that can handle the Intent
+                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(mapIntent);
+
+                    } else {
+                        AlertHelper.showSimpleAlertDiag(EmergencyActivity.this, "Directions Error", "No application installed to handle directions. Install GoogleMaps from the play store to use the directions feature.");
+                    }
+                } else {
+                    Toast.makeText(EmergencyActivity.this, "No location set for current responder. Please allow the app perssion to access location services to get directions!", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     };
 
@@ -132,8 +173,8 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
         String responderInfo = "";
         if(emergency.responder != null){
-            if(emergency.responder.currentLocation != null && emergency.location != null) {
-                Float distance = emergency.location.distanceTo(emergency.responder.currentLocation);
+            if(currentResponder.currentLocation != null && emergency.location != null) {
+                Float distance = emergency.location.distanceTo(currentResponder.currentLocation);
                 Float distanceInKm = distance/1000;
                 String stringDistance = String.format("%1.2f", distanceInKm);
                 responderInfo += "The emergency is "
@@ -185,6 +226,7 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 emergencyPresenter.upDateEmergencyStatus(currentEmergency, EmergencyStatus.INPROGRESS);
+                emergencyPresenter.updateResponder(currentEmergency, currentResponder);
             }
         });
 
@@ -212,6 +254,33 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 emergencyPresenter.upDateEmergencyStatus(currentEmergency, EmergencyStatus.RESOLVED);
+            }
+        });
+
+        // create and show alert
+        builder.create().show();
+    }
+
+    private void showPermissionAlert() {
+        // create an alert dialogue builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // configure title and message for the alert
+        builder.setTitle("Location Access Permission");
+        builder.setMessage("The app requires your permission to access your location in order to provide directions to emergencies.");
+
+        // add cancel button
+        builder.setNegativeButton("Do not Allow", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+
+        // add grant access button
+        builder.setPositiveButton("Grant Access", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ActivityCompat.requestPermissions(EmergencyActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, Constants.PERMISSIONS_REQUEST_ACCESS_LOCATION);
             }
         });
 
@@ -281,6 +350,36 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
     @Override
     public void requestLocationPermission() {
 
+        // check if permission has already been given
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // permission not granted
+
+            // check if you need to show rational behind asking for permission
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                Log.d(TAG, "requestPermission: show permission alert");
+                showPermissionAlert();
+
+            } else {
+                ActivityCompat.requestPermissions(EmergencyActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION}, Constants.PERMISSIONS_REQUEST_ACCESS_LOCATION);
+
+            }
+
+        } else {
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // check if you need to show rational behind asking for permission
+                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+
+                    Log.d(TAG, "requestPermission: show permission alert");
+                    showPermissionAlert();
+
+                } else {
+                    ActivityCompat.requestPermissions(EmergencyActivity.this, new String[] {Manifest.permission.ACCESS_BACKGROUND_LOCATION}, Constants.PERMISSIONS_REQUEST_ACCESS_LOCATION);
+
+                }
+            }
+        }
+
     }
 
     @Override
@@ -290,7 +389,10 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
     @Override
     public void onUserChanged(Responder responder) {
-        emergencyPresenter.updateResponder(responder);
+        currentResponder = responder;
+        if(currentEmergency != null) {
+            emergencyPresenter.updateResponder(currentEmergency, responder);
+        }
     }
 
     @Override
