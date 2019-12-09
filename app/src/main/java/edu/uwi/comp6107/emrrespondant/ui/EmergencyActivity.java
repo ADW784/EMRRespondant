@@ -107,9 +107,10 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
     @Override
     public void onBackPressed() {
-        if(currentEmergency != null && currentEmergency.status.equals(EmergencyStatus.INPROGRESS)){
+        if(currentEmergency != null && currentEmergency.status.equals(EmergencyStatus.INPROGRESS.toString())){
             Log.d(TAG, "onBackPressed: Override this to do nothing.");
         } else {
+            Log.d(TAG, "onBackPressed: Allowed.");
             super.onBackPressed();
         }
     }
