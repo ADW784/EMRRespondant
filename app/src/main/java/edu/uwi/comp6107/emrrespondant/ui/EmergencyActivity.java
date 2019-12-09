@@ -143,7 +143,11 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
         }
         distanceTextView.setText(responderInfo);
 
-
+        if(emergency.status.equals(EmergencyStatus.CREATED.toString())){
+            respondToEmergencyButton.setText("Respond to Emergency");
+        } else {
+            respondToEmergencyButton.setText("Resolve Emergency");
+        }
 
     }
 
