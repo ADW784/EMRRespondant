@@ -35,6 +35,7 @@ public class EmergencyPresenter {
         void errorRetrievingEmergencyDetails(String message);
         void errorArchivingEmergency(String message);
         void errorRemovingEmergencyFromActiveList(String message);
+        void shouldDeleteCurrentEmergency();
     }
 
     private static final String TAG = "MDB:EmergencyPresenter";
@@ -66,6 +67,7 @@ public class EmergencyPresenter {
                 }
             } else {
                 Log.d(TAG, "userEmergencyListener:onDataChange: emergency is null, check programming logic!");
+                view.shouldDeleteCurrentEmergency();
             }
 
         }
@@ -122,6 +124,25 @@ public class EmergencyPresenter {
                         Log.d(TAG, "upDateEmergencyStatusForCurrentUser:onFailure: error: " + e.getMessage());
                     }
                 });
+    }
+
+    public void deleteActiveEmergencyWithId(final String id) {
+
+
+        firebaseManager.ACTIVE_EMERGENCIES_DATABASE_REFERENCE.child(id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "removeEmergencyFromActiveList:onComplete: successfully removed emergency from active list. id: " + id);
+                view.didRemoveEmergencyFromActiveList(null);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "removeEmergencyFromActiveList:onComplete: error:" + e.getMessage());
+                view.errorRemovingEmergencyFromActiveList(e.getLocalizedMessage());
+            }
+        });
+
     }
 
     public void removeEmergencyFromActiveList(final Emergency emergency) {

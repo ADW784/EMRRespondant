@@ -53,6 +53,8 @@ public class EmergencyListAdaptor extends RecyclerView.Adapter<EmergencyListAdap
 
                     Intent intent = new Intent(context, EmergencyActivity.class);
                     intent.putExtra("CALLER_ID", emergencies.get(getAdapterPosition()).callerId);
+                    intent.putExtra("EMERGENCY_ID", emergencies.get(getAdapterPosition()).id);
+
                     Log.d(TAG, "onClick: passing caller id of: " + emergencies.get(getAdapterPosition()).callerId);
                     context.startActivity(intent);
                 }

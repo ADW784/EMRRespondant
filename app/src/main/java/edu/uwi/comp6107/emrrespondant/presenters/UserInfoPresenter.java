@@ -92,6 +92,25 @@ public class UserInfoPresenter {
 
     }
 
+    public void deleteEmergencyForUserWithUid(final String uid){
+
+        firebaseManager.USERS_DATABASE_REFERENCE.child(uid).child(firebaseManager.EMERGENCY_REF).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "deleteEmergencyForUserWithUid:onSuccess: uid:" + uid);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "deleteEmergencyForUserWithUid:onFailure: " + e.getMessage());
+                    }
+                });
+
+
+    }
+
 
     public void updateLocationOfCurrentResponder(Location location) {
         firebaseManager.RESPONDERS_DATABASE_REFERENCE.child(firebaseAuth.getCurrentUser().getUid()).child("currentLocation").setValue(location)

@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.LocationResult;
 
-import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,6 +43,8 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
     UserInfoPresenter userInfoPresenter;
     Caller currentCaller;
     Responder currentResponder;
+    String retrievedEmergencyId;
+    String retrievedCallerId;
 
     TextView timestampTextView;
     TextView statusTextView;
@@ -117,8 +118,9 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
         emergencyPresenter = new EmergencyPresenter(this);
         Intent intent = getIntent();
-        String callerId = intent.getStringExtra("CALLER_ID");
-        emergencyPresenter.getEmergencyDetailsForUserWithId(callerId);
+        retrievedCallerId = intent.getStringExtra("CALLER_ID");
+        retrievedEmergencyId = intent.getStringExtra("EMERGENCY_ID");
+        emergencyPresenter.getEmergencyDetailsForUserWithId(retrievedCallerId);
 
         locationPresenter = new LocationPresenter(this, this);
         locationPresenter.checkLocationSettingsAndStartUpdates(this);
@@ -290,11 +292,20 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
     @Override
     public void didRetrieveEmergencyDetails(Emergency emergency) {
-        if(currentCaller == null) {
-            userInfoPresenter.getUserWithUid(emergency.callerId);
+
+        if(emergency.id == null) {
+            emergencyPresenter.deleteActiveEmergencyWithId(retrievedEmergencyId);
+            userInfoPresenter.deleteEmergencyForUserWithUid(retrievedCallerId);
+            goBackToEmergencyListActivity();
+        } else {
+
+            if(currentCaller == null) {
+                userInfoPresenter.getUserWithUid(emergency.callerId);
+            }
+
+            currentEmergency = emergency;
+            updateUI(emergency);
         }
-        currentEmergency = emergency;
-        updateUI(emergency);
     }
 
     @Override
@@ -333,6 +344,12 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
 
     }
 
+    @Override
+    public void shouldDeleteCurrentEmergency() {
+        Log.d(TAG, "shouldDeleteCurrentEmergency: retrievedEmergencyId" + retrievedEmergencyId);
+        emergencyPresenter.deleteActiveEmergencyWithId(retrievedEmergencyId);
+        goBackToEmergencyListActivity();
+    }
 
     @Override
     public void didGetLastLocation(Location location) {
@@ -390,7 +407,7 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
     @Override
     public void onUserChanged(Responder responder) {
         currentResponder = responder;
-        if(currentEmergency != null) {
+        if(currentEmergency != null && currentEmergency.responder == responder) {
             emergencyPresenter.updateResponder(currentEmergency, responder);
         }
     }
@@ -398,6 +415,13 @@ public class EmergencyActivity extends AppCompatActivity implements EmergencyPre
     @Override
     public void didRetrieveSpecifiedCaller(Caller caller) {
         currentCaller = caller;
+        if(caller.emergency != null && (caller.emergency.id == null || caller.emergency.id.isEmpty())) {
+            userInfoPresenter.deleteEmergencyForUserWithUid(caller.uid);
+            emergencyPresenter.deleteActiveEmergencyWithId(retrievedCallerId);
+            Log.d(TAG, "didRetrieveSpecifiedCaller: bad emergency in caller" );
+            goBackToEmergencyListActivity();
+
+        }
         updateCallerInfo(caller);
     }
 }
