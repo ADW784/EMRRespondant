@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.androiddev.emrrespondant">
+    package="edu.uwi.comp6107.emrrespondant">
 
     <application
         android:allowBackup="true"
@@ -9,15 +9,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.SOSLocation"></activity>
-        <activity android:name=".UI.RespondantSOSList" />
-        <activity android:name=".UI.MainActivity">
+        <activity android:name=".ui.EmergencyListActivity"></activity>
+        <activity
+            android:name=".ui.EmergencyActivity"> </activity>
+        <activity android:name=".ui.RegistrationActivity" />
+        <activity android:name=".ui.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC9_lhie22nq3YsTgKg6MiPu6D-imOgau8"/>
+
+        <!--<service
+            android:name=".FetchAddressIntentService"
+            android:exported="false"/>-->
+
     </application>
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 </manifest>
