@@ -4,13 +4,18 @@ import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.uwi.comp6107.emrrespondant.managers.FirebaseManager;
 import edu.uwi.comp6107.emrrespondant.model.CustomLocation;
@@ -81,6 +86,25 @@ public class EmergencyPresenter {
 
     public void getEmergencyDetailsForUserWithId(String id) {
         firebaseManager.USERS_DATABASE_REFERENCE.child(id).child(firebaseManager.EMERGENCY_REF).addValueEventListener(userEmergencyListener);
+    }
+
+    public void upDateEmergencyStatus(Emergency emergency, final EmergencyStatus status){
+
+        firebaseManager.USERS_DATABASE_REFERENCE.child(emergency.callerId).child(firebaseManager.EMERGENCY_REF).child("status")
+                .setValue(status.toString())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "upDateEmergencyStatusForCurrentUser:onSuccess: status: " + status.toString());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "upDateEmergencyStatusForCurrentUser:onFailure: error: " + e.getMessage());
+                    }
+                });
+
     }
 
     public void upDateEmergencyStatusForCurrentUser(final EmergencyStatus status){
@@ -173,6 +197,7 @@ public class EmergencyPresenter {
 
 
     public void updateResponder(Responder responder){
+
         firebaseManager.getRefForCurrentUser().child(firebaseManager.EMERGENCY_REF).child("responder").setValue(responder)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

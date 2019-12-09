@@ -49,4 +49,10 @@
     <string name="placeholder_distance">300km away</string>
     <string name="button_title_respond_to_emergency">Respond to Emergency</string>
     <string name="button_title_get_directions">Get Directions</string>
+    <string name="text_title_caller_info">Caller Info</string>
+    <string name="text_title_allergies">Allergies</string>
+    <string name="text_title_medication">Medication</string>
+    <string name="placeholder_allergy_info">No allergies indicated.</string>
+    <string name="placeholder_medical_info">No medication indicated.</string>
+    <string name="placeholder_doctor_info">Dr. Quinn, medicine woman</string>
 </resources>

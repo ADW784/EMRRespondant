@@ -1,5 +1,6 @@
 package edu.uwi.comp6107.emrrespondant.presenters;
 
+import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ public class UserInfoPresenter {
 
     public interface View {
         void onUserChanged(Responder responder);
+        void didRetrieveSpecifiedCaller(Caller caller);
     }
 
     View view;
@@ -66,7 +68,46 @@ public class UserInfoPresenter {
 
     }
 
+    public void getUserWithUid(String uid){
 
+        firebaseManager.USERS_DATABASE_REFERENCE.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    Caller caller = dataSnapshot.getValue(Caller.class);
+                    if(caller != null) {
+                        Log.d(TAG, "getUserWithUid:onDataChange: " + caller);
+                        view.didRetrieveSpecifiedCaller(caller);
+                    } else {
+                        Log.d(TAG, "getUserWithUid:onDataChange: caller is null, snapshot data: " + dataSnapshot.toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, "getUserWithUid:onCancelled: " + databaseError.getDetails());
+            }
+        });
+
+    }
+
+
+    public void updateLocationOfCurrentResponder(Location location) {
+        firebaseManager.RESPONDERS_DATABASE_REFERENCE.child(firebaseAuth.getCurrentUser().getUid()).child("currentLocation").setValue(location)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "updateLocationOfCurrentResponder:onSuccess: ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "updateLocationOfCurrentResponder:onFailure: " + e.getMessage());
+                    }
+                });
+    }
 
 
     public void updateResponderProfile(final Responder responder) {

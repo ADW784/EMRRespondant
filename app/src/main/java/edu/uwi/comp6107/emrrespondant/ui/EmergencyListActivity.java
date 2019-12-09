@@ -5,18 +5,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import com.google.android.gms.location.LocationResult;
 
 import java.util.ArrayList;
 
 import edu.uwi.comp6107.emrrespondant.R;
+import edu.uwi.comp6107.emrrespondant.model.Caller;
 import edu.uwi.comp6107.emrrespondant.model.Emergency;
 import edu.uwi.comp6107.emrrespondant.model.Responder;
 import edu.uwi.comp6107.emrrespondant.presenters.EmergencyListPresenter;
+import edu.uwi.comp6107.emrrespondant.presenters.LocationPresenter;
 import edu.uwi.comp6107.emrrespondant.presenters.UserInfoPresenter;
 
-public class EmergencyListActivity extends AppCompatActivity implements EmergencyListPresenter.View, UserInfoPresenter.View {
+public class EmergencyListActivity extends AppCompatActivity implements EmergencyListPresenter.View, UserInfoPresenter.View, LocationPresenter.LocationListener {
 
     private static final String TAG = "MDB:EmergencyListActivity";
 
@@ -24,11 +29,15 @@ public class EmergencyListActivity extends AppCompatActivity implements Emergenc
     private EmergencyListAdaptor adaptor;
     private EmergencyListPresenter emergencyListPresenter;
     private UserInfoPresenter userInfoPresenter;
+    private LocationPresenter locationPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency_list);
+
+        locationPresenter = new LocationPresenter(this, this);
+        locationPresenter.checkLocationSettingsAndStartUpdates(this);
 
         recyclerView = findViewById(R.id.emergency_list_recycler_view);
         adaptor = new EmergencyListAdaptor(this);
@@ -65,4 +74,30 @@ public class EmergencyListActivity extends AppCompatActivity implements Emergenc
         adaptor.updateCurrentResponder(responder);
     }
 
+    @Override
+    public void didRetrieveSpecifiedCaller(Caller caller) {
+
+    }
+
+    @Override
+    public void didGetLastLocation(Location location) {
+        userInfoPresenter.updateLocationOfCurrentResponder(location);
+    }
+
+    @Override
+    public void didFailToGetLastLocation(String message) {
+
+    }
+
+    @Override
+    public void requestLocationPermission() {
+
+    }
+
+    @Override
+    public void didUpdateLocation(LocationResult locationResult) {
+//        if(locationResult.getLastLocation() != null) {
+//            userInfoPresenter.updateLocationOfCurrentResponder(locationResult.getLastLocation());
+//        }
+    }
 }
