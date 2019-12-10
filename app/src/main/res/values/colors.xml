@@ -7,9 +7,9 @@
     <color name="colorWhite">#FFFFFF</color>
 
     <!-- THEME COLORS -->
-    <color name="colorPrimary">#03A9F4</color>
-    <color name="colorPrimaryDark">#0288D1</color>
-    <color name="colorPrimaryLight">#B3E5FC</color>
+    <color name="colorPrimary">#FF0007</color>
+    <color name="colorPrimaryDark">#D10202</color>
+    <color name="colorPrimaryLight">#FCB3B3</color>
     <color name="colorAccent">#FF5252</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#801b20</color>
