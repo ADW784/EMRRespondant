@@ -91,7 +91,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_emergency_foreground" />
+            app:srcCompat="@drawable/emr_respondant_img2" />
 
         <TextView
             android:id="@+id/register_textView"
